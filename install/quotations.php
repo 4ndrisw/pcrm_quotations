@@ -7,6 +7,7 @@ if (!$CI->db->table_exists(db_prefix() . 'quotations')) {
       `id` int(11) NOT NULL,
       `subject` varchar(191) NOT NULL,
       `content` longtext DEFAULT NULL,
+      `number` int(11) NOT NULL,
       `addedfrom` int(11) NOT NULL,
       `datecreated` datetime NOT NULL,
       `total` decimal(15,2) DEFAULT NULL,
