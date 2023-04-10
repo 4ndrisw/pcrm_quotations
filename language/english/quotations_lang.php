@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 $lang['settings_yes'] = 'Yes';
 $lang['settings_no'] = 'No';
 $lang['settings_group_quotations'] = 'Quotations';
-$lang['quotations'] = 'Quotation';
+$lang['quotations'] = 'Quotations';
 $lang['quotation'] = 'Quotation';
 $lang['new_quotation'] = 'New quotation';
 $lang['quotations_list_all'] = 'Quotation list all';
