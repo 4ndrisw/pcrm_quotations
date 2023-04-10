@@ -79,7 +79,7 @@
                <li role="presentation" data-toggle="tooltip" title="<?php echo _l('emails_tracking'); ?>" class="tab-separator">
                   <a href="#tab_emails_tracking" aria-controls="tab_emails_tracking" role="tab" data-toggle="tab">
                     <?php if(!is_mobile()){ ?>
-                     <i class="fa fa-envelope-open-o" aria-hidden="true"></i>
+                     <i class="fa fa-envelope-open" aria-hidden="true"></i>
                      <?php } else { ?>
                      <?php echo _l('emails_tracking'); ?>
                      <?php } ?>
@@ -108,10 +108,10 @@
          </div>
          <div class="col-md-9 text-right _buttons quotation_buttons">
             <?php if(has_permission('quotations','','edit')){ ?>
-            <a href="<?php echo admin_url('quotations/quotation/'.$quotation->id); ?>" data-placement="left" data-toggle="tooltip" title="<?php echo _l('quotation_edit'); ?>" class="btn btn-default btn-with-tooltip" data-placement="bottom"><i class="fa fa-pencil-square-o"></i></a>
+            <a href="<?php echo admin_url('quotations/quotation/'.$quotation->id); ?>" data-placement="left" data-toggle="tooltip" title="<?php echo _l('quotation_edit'); ?>" class="btn btn-default btn-with-tooltip" data-placement="bottom"><i class="fa fa-pencil-square"></i></a>
             <?php } ?>
             <div class="btn-group">
-               <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-file-pdf-o"></i><?php if(is_mobile()){echo ' PDF';} ?> <span class="caret"></span></a>
+               <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-file-pdf"></i><?php if(is_mobile()){echo ' PDF';} ?> <span class="caret"></span></a>
                <ul class="dropdown-menu dropdown-menu-right">
                   <li class="hidden-xs"><a href="<?php echo site_url('quotations/pdf/'.$quotation->id.'?output_type=I'); ?>"><?php echo _l('view_pdf'); ?></a></li>
                   <li class="hidden-xs"><a href="<?php echo site_url('quotations/pdf/'.$quotation->id.'?output_type=I'); ?>" target="_blank"><?php echo _l('view_pdf_in_new_window'); ?></a></li>
