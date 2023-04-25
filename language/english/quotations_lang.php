@@ -13,6 +13,8 @@ $lang['quotation_status_open'] = 'Open';
 $lang['quotation_status_revised'] = 'Revised';
 $lang['quotation_status_declined'] = 'Declined';
 $lang['quotation_status_accepted'] = 'Accepted';
+$lang['quotation_status_expired'] = 'Expired';
+$lang['quotation_status_approved'] = 'Approved';
 $lang['quotation_expired'] = 'Expired';
 $lang['quotation'] = 'Quotation';
 $lang['quotations_leads_related'] = 'Leads';
@@ -33,7 +35,6 @@ $lang['quotation_subtotal'] = 'Sub total';
 
 $lang['quotation_comments'] = 'Comments';
 $lang['quotation_reminders'] = 'Reminders';
-$lang['quotation_notes'] = 'Notes';
 $lang['quotation_edit'] = 'Edit';
 $lang['quotation_send_to_email'] = 'Send to email';
 $lang['quotation_view'] = 'View';
@@ -64,3 +65,33 @@ $lang['quotation_data_expiry_date']='Expiry';
 
 $lang['clients_accept_quotation']='Accept';
 $lang['clients_decline_quotation']='Decline';
+
+$lang['quotation_note']='Scoupe of Works';
+$lang['quotations_pipeline']='Pipeline';
+$lang['quotations_sort_datecreated']='Datecreated';
+$lang['quotations_sort_quotation_date']='Quotation date';
+$lang['quotations_sort_open_till']='Open till';
+$lang['no_quotations_found']='No Quotations found';
+$lang['quotation_address']='Address';
+$lang['quotation_assigned']='Assigned';
+$lang['quotation_phone']='Phone';
+$lang['quotation_email']='Email';
+
+$lang['estimates_sort_pipeline']                 = 'Pipeline Order';
+
+$lang['General']='General';
+$lang['Quotations']='Quotations';
+$lang['quotation_prefix']='prefix';
+$lang['next_quotation_number_tooltip']='';
+$lang['due_after_help']='Set zero to avoid calculation';
+$lang['quotation_number_of_date_tooltip']='';
+$lang['quotation_number_format']='Number format';
+$lang['quotation_number_format_number_based']='Format number based';
+$lang['quotation_number_format_year_based']='Year based';
+//$lang['quotations_sort_pipeline']='';
+//$lang['quotations_sort_expiry_date']='';
+$lang['quotation_files']='Files';
+$lang['quotations_sort_pipeline']='Pipeline_order';
+$lang['quotations_sort_expiry_date']='Expiry Date';
+
+$lang['quotation_mark_as']                = 'Mark as %s';

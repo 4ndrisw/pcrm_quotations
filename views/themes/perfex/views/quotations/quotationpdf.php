@@ -4,57 +4,70 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 $dimensions = $pdf->getPageDimensions();
 
-$info_right_column = '';
-$info_left_column  = '';
-
-$info_right_column .= '<span style="font-weight:bold;font-size:27px;">' . _l('quotation_pdf_heading') . '</span><br />';
-$info_right_column .= '<b style="color:#4e4e4e;"># ' . format_quotation_number($quotation->id) . '</b>';
-
-if (get_option('show_status_on_pdf_ei') == 1) {
-    $info_right_column .= '<br /><span style="color:rgb(' . quotation_status_color_pdf($quotation->status) . ');text-transform:uppercase;">' . format_quotation_status($quotation->status, '', false) . '</span>';
-}
-
-// Add logo
-$info_left_column .= pdf_logo_url();
-// Write top left logo and right column info/text
-pdf_multi_row($info_left_column, $info_right_column, $pdf, ($dimensions['wk'] / 2) - $dimensions['lm']);
-
-$pdf->ln(10);
-
-$organization_info = '<div style="color:#424242;">';
-    $organization_info .= format_organization_info();
-$organization_info .= '</div>';
+$pdf->ln(25);
 
 // Estimate to
-$quotation_info = '<b>' . _l('quotation_to') . '</b>';
-$quotation_info .= '<div style="color:#424242;">';
-$quotation_info .= format_quotation_info($quotation, 'quotation');
-$quotation_info .= '</div>';
-
-$quotation_info .= '<br />' . _l('quotation_data_date') . ': ' . _d($quotation->date) . '<br />';
-
-if (!empty($quotation->open_till)) {
-    $quotation_info .= _l('quotation_data_expiry_date') . ': ' . _d($quotation->open_till) . '<br />';
-}
+$customer_info = '<b>' . _l('quotation_to') . '</b>';
+$customer_info .= '<div style="color:#424242;">';
+$customer_info .= format_quotation_info($quotation, 'quotation');
+$customer_info .= '</div>';
 
 if (!empty($quotation->reference_no)) {
-    $quotation_info .= _l('reference_no') . ': ' . $quotation->reference_no . '<br />';
+    $customer_info .= _l('reference_no') . ': ' . $quotation->reference_no . '<br />';
 }
 
+$organization_info = '<div style="color:#424242;">';
+    //$organization_info .= format_organization_info();
+//    $organization_info .= '<span style = "width:300px;">Nomor</span><span>:</span> </span>' .format_quotation_number($quotation->id) . '</div>';
+//    $organization_info .= '<span >Nomor</span><span>:</span> </span>' ._d($quotation->date) . '</div>';
 
 
-foreach ($pdf_custom_fields as $field) {
-    $value = get_custom_field_value($quotation->id, $field['id'], 'quotation');
-    if ($value == '') {
-        continue;
+    $organization_info .=  '<table width=100%>';
+    $organization_info .=  '<tr>
+                                <td width="25%"><strong>Nomor</strong></td>
+                                <td width="5%">:</td>
+                                <td width="70%">' .format_quotation_number($quotation->id) . '</td>
+                            </tr>';
+    $organization_info .=  '<tr>
+                                <td width="25%"><strong>Tanggal</strong></td>
+                                <td width="5%">:</td>
+                                <td width="70%">' .getDay($quotation->date) .' '.getMonth($quotation->date).' '.getYear($quotation->date) .'</td>
+                            </tr>';
+    $organization_info .=  '<tr>
+                                <td width="25%"><strong>Perihal</strong></td>
+                                <td width="5%">:</td>
+                                <td width="70%">' . $quotation->subject . '</td>
+                            </tr>';
+
+    if (!empty($quotation->reference_no)) {
+        $customer_info .= _l('reference_no') . ': ' . $quotation->reference_no . '<br />';
+        $organization_info .=  '<tr>
+                                <td width="25%">'._l('reference_no') .'</td>
+                                <td width="5%">:</td>
+                                <td width="70%">' . $quotation->reference_no . '</td>
+                            </tr>';
+
     }
-    $quotation_info .= $field['name'] . ': ' . $value . '<br />';
-}
 
-$left_info  = $swap == '1' ? $quotation_info : $organization_info;
-$right_info = $swap == '1' ? $organization_info : $quotation_info;
+    $organization_info .=  '</table>';
+
+
+$organization_info .= '</div>';
+
+// set margins
+$pdf->SetMargins(PDF_MARGIN_LEFT - 5, PDF_MARGIN_TOP + 10, PDF_MARGIN_RIGHT - 5);
+//$pdf->SetHeaderMargin(PDF_MARGIN_HEADER + 30);
+
+$right_info  = $swap == '1' ? $customer_info : $organization_info;
+$left_info = $swap == '1' ? $organization_info : $customer_info;
 
 pdf_multi_row($left_info, $right_info, $pdf, ($dimensions['wk'] / 2) - $dimensions['lm']);
+
+$pdf->Ln(6);
+$prefix = 'Dengan Hormat, <br /><br />';
+$prefix .= 'Berdasarkan permintaan harga sertifikasi peralatan K3, berikut ini Kami sampaikan penawaran harga pekerjaan tersebut untuk '. $quotation->quotation_to.' dengan perincian berikut.';
+
+$pdf->writeHTMLCell('', '', '', '', $prefix, 0, 1, false, true, 'L', true);
 
 // The Table
 $pdf->Ln(hooks()->apply_filters('pdf_info_and_table_separator', 6));
@@ -121,20 +134,78 @@ if (get_option('total_to_words_enabled') == 1) {
     $pdf->Ln(4);
 }
 
-if (!empty($quotation->client_note)) {
+$pdf->Ln(6);
+$prefix = 'Demikianlah penawaran harga ini Kami sampaikan, bila diperlukan diskusi lebih lanjut terkait dengan penawaran ini bisa menghubungi nomor '. get_staff_phonenumber($quotation->assigned).'  a.n '. get_staff_full_name($quotation->assigned) .', atas kesempatan yang berikan, kami mengucapkan terima kasih.';
+
+$pdf->writeHTMLCell('', '', '', '', $prefix, 0, 1, false, true, 'L', true);
+
+$pdf->ln(10);
+
+/*
+$assigned_path = <<<EOF
+        <img width="150" height="150" src="$quotation->assigned_path">
+    EOF;    
+*/
+$assigned_info = '<div style="text-align:center;">';
+    $assigned_info .= get_option('invoice_company_name') . '<br />';
+    //$assigned_info .= $assigned_path . '<br />';
+
+if ($quotation->assigned != 0 && get_option('show_assigned_on_quotations') == 1) {
+    $style = array(
+        'border' => 0,
+        'vpadding' => 'auto',
+        'hpadding' => 'auto',
+        'fgcolor' => array(0, 0, 0),
+        'bgcolor' => false, //array(255,255,255)
+        'module_width' => 1, // width of a single module in points
+        'module_height' => 1 // height of a single module in points
+     );
+    $text = format_quotation_number($quotation->id)  .' - ' . _d($quotation->quotation_to);
+    $assigned_info .= $pdf->write2DBarcode($text, 'QRCODE,L', 37, $pdf->getY(), 40, 40, $style);
+
+    $assigned_info .=  '<br /> <br /> <br /> <br /> <br /> <br /><br />';   
+    $assigned_info .= get_staff_full_name($quotation->assigned);
+}
+$assigned_info .= '</div>';
+/*
+$acceptance_path = <<<EOF
+    <img src="$quotation->acceptance_path">
+EOF;
+*/
+$client_info = '<div style="text-align:center;">';
+    $client_info .= strtoupper($quotation->quotation_to) .'<br />';
+
+if ($quotation->signed != 0) {
+    $client_info .= _l('quotation_signed_by') . ": {$quotation->acceptance_firstname} {$quotation->acceptance_lastname}" . '<br />';
+    $client_info .= _l('quotation_signed_date') . ': ' . _dt($quotation->acceptance_date_string) . '<br />';
+    $client_info .= _l('quotation_signed_ip') . ": {$quotation->acceptance_ip}" . '<br />';
+
+    $client_info .= $acceptance_path;
+    $client_info .= '<br />';
+}
+$client_info .= '</div>';
+
+
+$left_info  = $swap == '1' ? $client_info : $assigned_info;
+$right_info = $swap == '1' ? $assigned_info : $client_info;
+pdf_multi_row($left_info, $right_info, $pdf, ($dimensions['wk'] / 2) - $dimensions['lm']);
+
+if (!empty($quotation->note)) {
     $pdf->Ln(4);
     $pdf->SetFont($font_name, 'B', $font_size);
     $pdf->Cell(0, 0, _l('quotation_note'), 0, 1, 'L', 0, '', 0);
     $pdf->SetFont($font_name, '', $font_size);
     $pdf->Ln(2);
-    $pdf->writeHTMLCell('', '', '', '', $quotation->client_note, 0, 1, false, true, 'L', true);
+    $pdf->writeHTMLCell('', '', '', '', $quotation->note, 0, 1, false, true, 'L', true);
 }
 
-if (!empty($quotation->terms)) {
+if (!empty($quotation->term)) {
     $pdf->Ln(4);
     $pdf->SetFont($font_name, 'B', $font_size);
     $pdf->Cell(0, 0, _l('terms_and_conditions') . ":", 0, 1, 'L', 0, '', 0);
     $pdf->SetFont($font_name, '', $font_size);
     $pdf->Ln(2);
-    $pdf->writeHTMLCell('', '', '', '', $quotation->terms, 0, 1, false, true, 'L', true);
+    $pdf->writeHTMLCell('', '', '', '', $quotation->term, 0, 1, false, true, 'L', true);
 }
+
+

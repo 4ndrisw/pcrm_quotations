@@ -73,6 +73,41 @@ function pdf_logo_url()
 }
 
 /**
+ * Fetches custom pdf logo url for pdf or use the default logo uploaded for the iso
+ * Additional statements applied because this function wont work on all servers. All depends how the server is configured.
+ * @return string
+ */
+function pdf_right_logo_url()
+{
+    $custom_pdf_logo_image_url = get_option('custom_pdf_logo_image_url');
+    $width                     = get_option('pdf_logo_width');
+    $isoUploadPath         = 'uploads/iso' . '/';
+    $logoUrl                   = '';
+
+    if ($width == '') {
+        $width = 120;
+    }
+
+    if ($custom_pdf_logo_image_url != '') {
+        $logoUrl = $custom_pdf_logo_image_url;
+    } else {
+        if (get_option('iso_logo_dark') != '' && file_exists($isoUploadPath . get_option('iso_logo_dark'))) {
+            $logoUrl = $isoUploadPath . get_option('iso_logo_dark');
+        } elseif (get_option('iso_logo') != '' && file_exists($isoUploadPath . get_option('iso_logo'))) {
+            $logoUrl = $isoUploadPath . get_option('iso_logo');
+        }
+    }
+
+    $logoImage = '';
+
+    if ($logoUrl != '') {
+        $logoImage = '<img width="' . $width . 'px" src="' . $logoUrl . '">';
+    }
+
+    return hooks()->apply_filters('pdf_logo_url', $logoImage);
+}
+
+/**
  * Get available fonts for PDF
  * @return mixed
  */

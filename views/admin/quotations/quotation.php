@@ -50,7 +50,7 @@
                               <option value="customer" <?php if((isset($quotation) &&  $quotation->rel_type == 'customer') || $this->input->get('rel_type')){if($rel_type == 'customer'){echo 'selected';}} ?>><?php echo _l('quotation_for_customer'); ?></option>
                            </select>
                         </div>
-                        <div class="form-group select-placeholder<?php if($rel_id == ''){echo ' hide';} ?> " id="rel_id_wrapper">
+                        <div class="form-group customer-removed select-placeholder<?php if($rel_id == ''){echo ' hide';} ?> " id="rel_id_wrapper">
                            <label for="rel_id"><span class="rel_id_label"></span></label>
                            <div id="rel_id_select">
                               <select name="rel_id" id="rel_id" class="ajax-search" data-width="100%" data-live-search="true" data-none-selected-text="<?php echo _l('dropdown_non_selected_tex'); ?>">
@@ -62,6 +62,90 @@
                               </select>
                            </div>
                         </div>
+
+
+                        <div class="row">
+                          <div class="col-md-12">
+
+                              <?php
+                                 $next_quotation_number = get_option('next_quotation_number');
+                                 $format = get_option('quotation_number_format');
+                                 
+                                  if(isset($quotation)){
+                                    $format = $quotation->number_format;
+                                  }
+
+                                 $prefix = get_option('quotation_prefix');
+
+                                 if ($format == 1) {
+                                   $__number = $next_quotation_number;
+                                   if(isset($quotation)){
+                                     $__number = $quotation->number;
+                                     $prefix = '<span id="prefix">' . $quotation->prefix . '</span>';
+                                   }
+                                 } else if($format == 2) {
+                                   if(isset($quotation)){
+                                     $__number = $quotation->number;
+                                     $prefix = $quotation->prefix;
+                                     $prefix = '<span id="prefix">'. $prefix . '</span><span id="prefix_year">' . date('Y',strtotime($quotation->date)).'</span>/';
+                                   } else {
+                                     $__number = $next_quotation_number;
+                                     $prefix = $prefix.'<span id="prefix_year">'.date('Y').'</span>/';
+                                   }
+                                 } else if($format == 3) {
+                                    if(isset($quotation)){
+                                     $yy = date('y',strtotime($quotation->date));
+                                     $__number = $quotation->number;
+                                     $prefix = '<span id="prefix">'. $quotation->prefix . '</span>';
+                                   } else {
+                                    $yy = date('y');
+                                    $__number = $next_quotation_number;
+                                  }
+                                 } else if($format == 4) {
+                                    if(isset($quotation)){
+                                     $yyyy = date('Y',strtotime($quotation->date));
+                                     $mm = date('m',strtotime($quotation->date));
+                                     $__number = $quotation->number;
+                                     $prefix = '<span id="prefix">'. $quotation->prefix . '</span>';
+                                   } else {
+                                    $yyyy = date('Y');
+                                    $mm = date('m');
+                                    $__number = $next_quotation_number;
+                                  }
+                                 }
+                                 
+                                 $_quotation_number = str_pad($__number, get_option('number_padding_prefixes'), '0', STR_PAD_LEFT);
+                                 $isedit = isset($quotation) ? 'true' : 'false';
+                                 $data_original_number = isset($quotation) ? $quotation->number : 'false';
+                                 ?>
+
+                                 <div class="form-group">
+                                    <label for="number"><?php echo _l('quotation_add_edit_number'); ?></label>
+                                    <div class="input-group">
+                                       <span class="input-group-addon">
+                                       <?php if(isset($quotation)){ ?>
+                                       <a href="#" onclick="return false;" data-toggle="popover" data-container='._transaction_form' data-html="true" data-content="<label class='control-label'><?php echo _l('settings_sales_quotation_prefix'); ?></label><div class='input-group'><input name='s_prefix' type='text' class='form-control' value='<?php echo $quotation->prefix; ?>'></div><button type='button' onclick='save_sales_number_settings(this); return false;' data-url='<?php echo admin_url('quotations/update_number_settings/'.$quotation->id); ?>' class='btn btn-info btn-block mtop15'><?php echo _l('submit'); ?></button>"><i class="fa fa-cog"></i></a>
+                                        <?php }
+                                         echo $prefix;
+                                       ?>
+                                       </span>
+                                       <input type="text" name="number" class="form-control" value="<?php echo $_quotation_number; ?>" data-isedit="<?php echo $isedit; ?>" data-original-number="<?php echo $data_original_number; ?>">
+                                       <?php if($format == 3) { ?>
+                                       <span class="input-group-addon">
+                                          <span id="prefix_year" class="format-n-yy"><?php echo $yy; ?></span>
+                                       </span>
+                                       <?php } else if($format == 4) { ?>
+                                        <span class="input-group-addon">
+                                          <span id="prefix_month" class="format-mm-yyyy"><?php echo $mm; ?></span>
+                                          .
+                                          <span id="prefix_year" class="format-mm-yyyy"><?php echo $yyyy; ?></span>
+                                       </span>
+                                       <?php } ?>
+                                    </div>
+                                 </div>
+                           </div>
+                        </div>
+
                         <div class="row">
                           <div class="col-md-6">
                               <?php $value = (isset($quotation) ? _d($quotation->date) : _d(date('Y-m-d'))) ?>
@@ -170,7 +254,7 @@
                            <div class="col-md-6">
                               <?php
                                  $i = 0;
-                                 $selected = '';
+                                 $selected = get_option('default_quotation_assigned');
                                  foreach($staff as $member){
                                   if(isset($quotation)){
                                     if($quotation->assigned == $member['staffid']) {
@@ -218,6 +302,13 @@
                   </div>
                   <div class="btn-bottom-toolbar bottom-transaction text-right">
                   <p class="no-mbot pull-left mtop5 btn-toolbar-notice"><?php echo _l('include_quotation_items_merge_field_help','<b>{quotation_items}</b>'); ?></p>
+                    <?php
+                      $cancel = $_SERVER['HTTP_REFERER'];
+                      if(isset($quotation->id)){
+                        $cancel = $_SERVER['HTTP_REFERER'].'#'.$quotation->id;
+                      }
+                     ?>
+                    <a class="btn btn-sm btn-default" href="<?php echo $cancel; ?>"><?php echo _l('cancel'); ?></a>
                     <button type="button" class="btn btn-info mleft10 quotation-form-submit save-and-send transaction-submit">
                         <?php echo _l('save_and_send'); ?>
                     </button>
@@ -336,7 +427,7 @@
         subject : 'required',
         quotation_to : 'required',
         rel_type: 'required',
-        rel_id : 'required',
+        //rel_id : 'required',
         date : 'required',
         email: {
          email:true,

@@ -158,7 +158,7 @@ function format_quotation_status($status, $classes = '', $label = true)
 {
     $id = $status;
     if ($status == 1) {
-        $status      = _l('quotation_status_open');
+        $status      = _l('quotation_status_draft');
         $label_class = 'default';
     } elseif ($status == 2) {
         $status      = _l('quotation_status_declined');
@@ -170,11 +170,11 @@ function format_quotation_status($status, $classes = '', $label = true)
         $status      = _l('quotation_status_sent');
         $label_class = 'info';
     } elseif ($status == 5) {
-        $status      = _l('quotation_status_revised');
-        $label_class = 'info';
+        $status      = _l('quotation_status_expired');
+        $label_class = 'warning';
     } elseif ($status == 6) {
-        $status      = _l('quotation_status_draft');
-        $label_class = 'default';
+        $status      = _l('quotation_status_approved');
+        $label_class = 'success';
     }
 
     if ($label == true) {
@@ -189,11 +189,64 @@ function format_quotation_status($status, $classes = '', $label = true)
  * @param  mixed $id quotation id
  * @return string
  */
+/*
 function format_quotation_number($id)
 {
-    $format = get_option('quotation_number_prefix') . str_pad($id, get_option('number_padding_prefixes'), '0', STR_PAD_LEFT);
+    $format = get_option('quotation_prefix') . str_pad($id, get_option('number_padding_prefixes'), '0', STR_PAD_LEFT);
 
     return hooks()->apply_filters('quotation_number_format', $format, $id);
+}
+*/
+
+
+/**
+ * Format quotation number based on description
+ * @param  mixed $id
+ * @return string
+ */
+function format_quotation_number($id)
+{
+    $CI = &get_instance();
+    $CI->db->select('date,number,prefix,number_format')->from(db_prefix() . 'quotations')->where('id', $id);
+    $quotation = $CI->db->get()->row();
+
+    if (!$quotation) {
+        return '';
+    }
+
+    $number = quotation_number_format($quotation->number, $quotation->number_format, $quotation->prefix, $quotation->date);
+
+    return hooks()->apply_filters('format_quotation_number', $number, [
+        'id'       => $id,
+        'quotation' => $quotation,
+    ]);
+}
+
+
+function quotation_number_format($number, $format, $applied_prefix, $date)
+{
+    $originalNumber = $number;
+    $prefixPadding  = get_option('number_padding_prefixes');
+    if ($format == 1) {
+        // Number based
+        $number = $applied_prefix . str_pad($number, $prefixPadding, '0', STR_PAD_LEFT);
+    } elseif ($format == 2) {
+        // Year based
+        $number = $applied_prefix . date('Y', strtotime($date)) . '.' . str_pad($number, $prefixPadding, '0', STR_PAD_LEFT);
+    } elseif ($format == 3) {
+        // Number-yy based
+        $number = $applied_prefix . str_pad($number, $prefixPadding, '0', STR_PAD_LEFT) . '-' . date('y', strtotime($date));
+    } elseif ($format == 4) {
+        // Number-mm-yyyy based
+        $number = $applied_prefix . str_pad($number, $prefixPadding, '0', STR_PAD_LEFT) . '.' . date('m', strtotime($date)) . '.' . date('Y', strtotime($date));
+    }
+
+    return hooks()->apply_filters('quotation_number_format', $number, [
+        'format'         => $format,
+        'date'           => $date,
+        'number'         => $originalNumber,
+        'prefix_padding' => $prefixPadding,
+    ]);
 }
 
 
@@ -393,7 +446,7 @@ if (!function_exists('format_quotation_info')) {
      */
     function format_quotation_info($quotation, $for = '')
     {
-        $format = get_option('quotation_info_format');
+        $format = get_option('customer_info_format');
 
         $countryCode = '';
         $countryName = '';
@@ -422,8 +475,8 @@ if (!function_exists('format_quotation_info')) {
             $email = '<a href="mailto:' . $quotation->email . '">' . $quotation->email . '</a>';
         }
 
-        $format = _info_format_replace('quotation_to', $quotationTo, $format);
-        $format = _info_format_replace('address', $quotation->address, $format);
+        $format = _info_format_replace('company_name', $quotationTo, $format);
+        $format = _info_format_replace('street', $quotation->address, $format);
         $format = _info_format_replace('city', $quotation->city, $format);
         $format = _info_format_replace('state', $quotation->state, $format);
 
@@ -438,15 +491,8 @@ if (!function_exists('format_quotation_info')) {
         if (is_custom_fields_for_customers_portal()) {
             $whereCF['show_on_client_portal'] = 1;
         }
-        $customFieldsProposals = get_custom_fields('quotation', $whereCF);
-
-        foreach ($customFieldsProposals as $field) {
-            $value  = get_custom_field_value($quotation->id, $field['id'], 'quotation');
-            $format = _info_format_custom_field($field['id'], $field['name'], $value, $format);
-        }
 
         // If no custom fields found replace all custom fields merge fields to empty
-        $format = _info_format_custom_fields_check($customFieldsProposals, $format);
         $format = _maybe_remove_first_and_last_br_tag($format);
 
         // Remove multiple white spaces
@@ -545,3 +591,102 @@ function quotation_status_color_pdf($status_id)
 
     return hooks()->apply_filters('quotation_status_pdf_color', $statusColor, $status_id);
 }
+
+
+/**
+ * Check for iso logo upload
+ * @return boolean
+ */
+function handle_iso_logo_upload()
+{
+    $logoIndex = ['logo', 'logo_dark'];
+    $success   = false;
+
+    foreach ($logoIndex as $logo) {
+        $index = 'iso_' . $logo;
+
+        if (isset($_FILES[$index]) && !empty($_FILES[$index]['name']) && _perfex_upload_error($_FILES[$index]['error'])) {
+            set_alert('warning', _perfex_upload_error($_FILES[$index]['error']));
+
+            return false;
+        }
+        if (isset($_FILES[$index]['name']) && $_FILES[$index]['name'] != '') {
+            hooks()->do_action('before_upload_iso_logo_attachment');
+            //$path = get_upload_path_by_type('quotations');
+            $path = 'uploads/iso' .'/';
+
+
+            // Get the temp file path
+            $tmpFilePath = $_FILES[$index]['tmp_name'];
+            // Make sure we have a filepath
+            if (!empty($tmpFilePath) && $tmpFilePath != '') {
+                // Getting file extension
+                $extension          = strtolower(pathinfo($_FILES[$index]['name'], PATHINFO_EXTENSION));
+                $allowed_extensions = [
+                    'jpg',
+                    'jpeg',
+                    'png',
+                    'gif',
+                    'svg',
+                ];
+
+                $allowed_extensions = array_unique(
+                    hooks()->apply_filters('iso_logo_upload_allowed_extensions', $allowed_extensions)
+                );
+
+                if (!in_array($extension, $allowed_extensions)) {
+                    set_alert('warning', 'Image extension not allowed.');
+
+                    continue;
+                }
+
+                // Setup our new file path
+                $filename    = md5($logo . time()) . '.' . $extension;
+                $newFilePath = $path . $filename;
+                
+                _maybe_create_upload_path($path);
+                // Upload the file into the iso uploads dir
+                if (move_uploaded_file($tmpFilePath, $newFilePath)) {
+                    update_option($index, $filename);
+                    $success = true;
+                }
+            }
+        }
+    }
+
+
+    return $success;
+}
+
+
+/**
+ * Get staff full name
+ * @param  string $userid Optional
+ * @return string Firstname and Lastname
+ */
+function get_staff_phonenumber($userid = '')
+{
+    $tmpStaffUserId = get_staff_user_id();
+    if ($userid == '' || $userid == $tmpStaffUserId) {
+        if (isset($GLOBALS['current_user'])) {
+            return $GLOBALS['current_user']->phonenumber;
+        }
+        $userid = $tmpStaffUserId;
+    }
+
+    $CI = & get_instance();
+
+    $staff = $CI->app_object_cache->get('staff-phonenumber-data-' . $userid);
+
+    if (!$staff) {
+        $CI->db->where('staffid', $userid);
+        $staff = $CI->db->select('phonenumber')->from(db_prefix() . 'staff')->get()->row();
+        $CI->app_object_cache->add('staff-phonenumber-data-' . $userid, $staff);
+    }
+
+    return html_escape($staff ? $staff->phonenumber : '');
+}
+
+
+
+

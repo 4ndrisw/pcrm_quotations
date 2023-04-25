@@ -44,11 +44,13 @@
                      ?>
                   </a>
                </li>
+               <?php if(is_admin()) { ?>
                <li role="presentation" class="tab-separator">
                   <a href="#tab_tasks" onclick="init_rel_tasks_table(<?php echo $quotation->id; ?>,'quotation'); return false;" aria-controls="tab_tasks" role="tab" data-toggle="tab">
                   <?php echo _l('tasks'); ?>
                   </a>
                </li>
+               <?php } ?>
 
                <li role="presentation" class="tab-separator">
                   <a href="#tab_notes" onclick="get_quotation_notes(); return false;" aria-controls="tab_notes" role="tab" data-toggle="tab">
@@ -61,20 +63,6 @@
                   ?>
                       <span class="badge total_notes <?php echo $total_notes === 0 ? 'hide' : ''; ?>"><?php echo $total_notes ?></span>
                   </a>
-               </li>
-
-
-               <li role="presentation" class="tab-separator">
-                     <a href="#tab_templates" onclick="get_templates('quotations', <?php echo $quotation->id ?? '' ?>); return false" aria-controls="tab_templates" role="tab" data-toggle="tab">
-                        <?php
-                        echo _l('templates');
-                        $total_templates = total_rows(db_prefix() . 'templates', [
-                            'type' => 'quotations',
-                          ]
-                        );
-                        ?>
-                         <span class="badge total_templates <?php echo $total_templates === 0 ? 'hide' : ''; ?>"><?php echo $total_templates ?></span>
-                     </a>
                </li>
                <li role="presentation" data-toggle="tooltip" title="<?php echo _l('emails_tracking'); ?>" class="tab-separator">
                   <a href="#tab_emails_tracking" aria-controls="tab_emails_tracking" role="tab" data-toggle="tab">
@@ -130,7 +118,7 @@
                </button>
                <ul class="dropdown-menu dropdown-menu-right">
                   <li>
-                     <a href="<?php echo site_url('quotation/'.$quotation->id .'/'.$quotation->hash); ?>" target="_blank"><?php echo _l('quotation_view'); ?></a>
+                     <a href="<?php echo site_url('quotations/show/'.$quotation->id .'/'.$quotation->hash); ?>" target="_blank"><?php echo _l('quotation_view'); ?></a>
                   </li>
                   <?php hooks()->do_action('after_quotation_view_as_client_link', $quotation); ?>
                   <?php if(!empty($quotation->open_till) && date('Y-m-d') < $quotation->open_till && ($quotation->status == 4 || $quotation->status == 1) && is_quotations_expiry_reminders_enabled()) { ?>
@@ -139,8 +127,19 @@
                   </li>
                   <?php } ?>
                   <li>
-                     <a href="#" data-toggle="modal" data-target="#sales_attach_file"><?php echo _l('invoice_attach_file'); ?></a>
+                     <a href="#" data-toggle="modal" data-target="#quotations_attach_file"><?php echo _l('invoice_attach_file'); ?></a>
                   </li>
+                  <?php if(staff_can('edit', 'quotations')){
+                    foreach($quotation_statuses as $status){
+                      if($quotation->status != $status){ ?>
+                        <li>
+                           <a href="<?php echo admin_url() . 'quotations/mark_action_status/'.$status.'/'.$quotation->id; ?>">
+                           <?php echo _l('quotation_mark_as',format_quotation_status($status,'',false)); ?></a>
+                        </li>
+                     <?php }
+                    }
+                    ?>
+                  <?php } ?>
                   <?php if(has_permission('quotations','','create')){ ?>
                   <li>
                      <a href="<?php echo admin_url() . 'quotations/copy/'.$quotation->id; ?>"><?php echo _l('quotation_copy'); ?></a>
@@ -242,7 +241,7 @@
                            </span>
                            </a>
                         </h4>
-                        <h5 class="bold mbot15 font-medium"><a href="<?php echo admin_url('quotations/quotation/'.$quotation->id); ?>"><?php echo $quotation->subject; ?></a></h5>
+                        <h5 class="bold mbot15 font-medium"><a href="<?php echo site_url('quotations/show/'.$quotation->id.'/'.$quotation->hash); ?>"><?php echo $quotation->subject; ?></a></h5>
                         <address>
                            <?php echo format_organization_info(); ?>
                         </address>
@@ -386,13 +385,35 @@
                      <?php if($quotation->client_note != ''){ ?>
                      <div class="col-md-12 mtop15">
                         <p class="bold text-muted"><?php echo _l('quotation_note'); ?></p>
-                        <p><?php echo $quotation->client_note; ?></p>
+                        <p>
+                        <?php
+                           $notes = explode('--', $quotation->client_note);
+                           $note_text = '<ul class="unordered-list">';
+                           foreach ($notes as $note) {
+                              if($note !== ''){
+                                 $note_text .='<li>' . $note . '</li>'; 
+                              }               }
+                           $note_text .= '</ul>';
+                           echo($note_text); 
+                        ?>
+                        </p>
                      </div>
                      <?php } ?>
                      <?php if($quotation->terms != ''){ ?>
                      <div class="col-md-12 mtop15">
                         <p class="bold text-muted"><?php echo _l('terms_and_conditions'); ?></p>
-                        <p><?php echo $quotation->terms; ?></p>
+                        <p>
+                        <?php
+                           $terms = explode('==', $quotation->terms);
+                           $term_text = '<ol class="ordered-list">';
+                           foreach ($terms as $term) {
+                              if($term !== ''){
+                                 $term_text .='<li>' . $term . '</li>'; 
+                              }               }
+                           $term_text .= '</ol>';
+                           echo($term_text); 
+                        ?>
+                        </p>
                      </div>
                      <?php } ?>
                   </div>
@@ -454,17 +475,6 @@
                   <!-- <div class="panel_s mtop20 no-shadow" id="sales_notes_area">
                   </div>-->
                </div>
-               <div role="tabpanel" class="tab-pane" id="tab_templates">
-                  <div class="row quotation-templates">
-                     <div class="col-md-12">
-                        <button type="button" class="btn btn-info" onclick="add_template('quotations',<?php echo $quotation->id ?? '' ?>);"><?php echo _l('add_template'); ?></button>
-                        <hr>
-                     </div>
-                     <div class="col-md-12">
-                        <div id="quotation-templates" class="quotation-templates-wrapper"></div>
-                     </div>
-                  </div>
-               </div>
                <div role="tabpanel" class="tab-pane" id="tab_emails_tracking">
                   <?php
                      $this->load->view('admin/includes/emails_tracking',array(
@@ -511,6 +521,7 @@
    init_selectpicker();
    init_form_reminder();
    init_tabs_scrollable();
+   init_quotations_attach_file();
      // defined in manage quotations
      quotation_id = '<?php echo $quotation->id; ?>';
      //init_quotation_editor();

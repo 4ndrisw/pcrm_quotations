@@ -11,7 +11,6 @@ $aColumns = [
     'total',
     'date',
     'open_till',
-    '(SELECT GROUP_CONCAT(name SEPARATOR ",") FROM ' . db_prefix() . 'taggables JOIN ' . db_prefix() . 'tags ON ' . db_prefix() . 'taggables.tag_id = ' . db_prefix() . 'tags.id WHERE rel_id = ' . db_prefix() . 'quotations.id and rel_type="quotation" ORDER by tag_order ASC) as tags',
     'datecreated',
     'status',
 ];
@@ -127,11 +126,15 @@ foreach ($rResult as $aRow) {
     $row[] = $numberOutput;
 
     $row[] = '<a href="' . admin_url('quotations/list_quotations/' . $aRow[db_prefix() . 'quotations.id']) . '" onclick="init_quotation(' . $aRow[db_prefix() . 'quotations.id'] . '); return false;">' . $aRow['subject'] . ' bb</a>';
-
-    if ($aRow['rel_type'] == 'lead') {
-        $toOutput = '<a href="#" onclick="init_lead(' . $aRow['rel_id'] . ');return false;" target="_blank" data-toggle="tooltip" data-title="' . _l('lead') . '">' . $aRow['quotation_to'] . '</a>';
-    } elseif ($aRow['rel_type'] == 'customer') {
-        $toOutput = '<a href="' . admin_url('clients/client/' . $aRow['rel_id']) . '" target="_blank" data-toggle="tooltip" data-title="' . _l('client') . '">' . $aRow['quotation_to'] . '</a>';
+    
+    if($aRow['rel_id'] != ''){
+        if ($aRow['rel_type'] == 'lead') {
+            $toOutput = '<a href="#" onclick="init_lead(' . $aRow['rel_id'] . ');return false;" target="_blank" data-toggle="tooltip" data-title="' . _l('lead') . '">' . $aRow['quotation_to'] . '</a>';
+        } elseif ($aRow['rel_type'] == 'customer') {
+            $toOutput = '<a href="' . admin_url('clients/client/' . $aRow['rel_id']) . '" target="_blank" data-toggle="tooltip" data-title="' . _l('client') . '">' . $aRow['quotation_to'] . '</a>';
+        }
+    }else{
+        $toOutput = $aRow['quotation_to'];
     }
 
     $row[] = $toOutput;
@@ -149,11 +152,50 @@ foreach ($rResult as $aRow) {
 
     $row[] = _d($aRow['open_till']);
 
-    $row[] = render_tags($aRow['tags']);
-
     $row[] = _d($aRow['datecreated']);
 
-    $row[] = format_quotation_status($aRow['status']);
+            $span = '';
+                //if (!$locked) {
+                    $span .= '<div class="dropdown inline-block mleft5 table-export-exclude">';
+                    $span .= '<a href="#" style="font-size:14px;vertical-align:middle;" class="dropdown-toggle text-dark" id="tableLeadsStatus-' . $aRow[db_prefix() . 'quotations.id'] . '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
+                    $span .= '<span data-toggle="tooltip" title="' . _l('ticket_single_change_status') . '"><i class="fa fa-caret-down" aria-hidden="true"></i></span>';
+                    $span .= '</a>';
+
+                    $span .= '<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="tableLeadsStatus-' . $aRow[db_prefix() . 'quotations.id'] . '">';
+                    foreach ($statuses as $quotationChangeStatus) {
+                        if ($aRow['status'] != $quotationChangeStatus) {
+                            $span .= '<li>
+                          <a href="#" onclick="quotation_mark_as(' . $quotationChangeStatus . ',' . $aRow[db_prefix() . 'quotations.id'] . '); return false;">
+                             ' . format_quotation_status($quotationChangeStatus) . '
+                          </a>
+                       </li>';
+                        }
+                    }
+                    $span .= '</ul>';
+                    $span .= '</div>';
+                //}
+                $span .= '</span>';
+
+            $outputStatus = '<span class="label label-danger inline-block">' . _l('quotation_status_draft') . $span;
+
+            if ($aRow['status'] == 1) {
+                $outputStatus = '<span class="label label-default inline-block">' . _l('quotation_status_draft') . $span;
+            } elseif ($aRow['status'] == 2) {
+                $outputStatus = '<span class="label label-danger inline-block">' . _l('quotation_status_declined') . $span;
+            } elseif ($aRow['status'] == 3) {
+                $outputStatus = '<span class="label label-success inline-block">' . _l('quotation_status_accepted') . $span;
+            } elseif ($aRow['status'] == 4) {
+                $outputStatus = '<span class="label label-info inline-block">' . _l('quotation_status_sent') . $span;
+            } elseif ($aRow['status'] == 5) {
+                $outputStatus = '<span class="label label-warning inline-block">' . _l('quotation_status_expired') . $span;
+            } elseif ($aRow['status'] == 6) {
+                $outputStatus = '<span class="label label-success inline-block">' . _l('quotation_status_approved') . '</span>';
+            }
+
+            $_data = $outputStatus;
+
+    $row[] = $outputStatus;
+    //$row[] = format_quotation_status($aRow['status']);
 
     // Custom fields add values
     foreach ($customFieldsColumns as $customFieldColumn) {

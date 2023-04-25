@@ -32,13 +32,54 @@ class Quotation_pdf extends App_pdf
         $this->tag      = $tag;
         $this->quotation = $quotation;
 
-        $this->quotation_number = format_quotation_number($this->quotation->id);
-
-        $this->SetTitle($this->quotation_number);
-        $this->SetDisplayMode('default', 'OneColumn');
 
         # Don't remove these lines - important for the PDF layout
         $this->quotation->content = $this->fix_editor_html($this->quotation->content);
+        $this->quotation_status_color = quotation_status_color_pdf($this->quotation->status);
+        $this->quotation_status = format_quotation_status($this->quotation->status);
+
+        $this->quotation_number = format_quotation_number($this->quotation->id);
+
+        $this->SetTitle($this->quotation_number .'-'. $this->quotation->quotation_to);
+        $this->SetDisplayMode('default', 'OneColumn');
+    }
+
+    //Page header
+    public function Header() {
+
+        $dimensions = $this->getPageDimensions();
+
+        $quotation                = hooks()->apply_filters('quotation_html_pdf_data', $this->quotation);
+        if(isset($quotation)){
+            $quotation_pdf = $quotation;
+        }
+
+        $right = pdf_right_logo_url();
+        
+        // Add logo
+        $left = pdf_logo_url();
+        $this->ln(5);
+
+        $page_start = $this->getPage();
+        $y_start    = $this->GetY();
+        $left_width = 40;
+        // Write top left logo and right column info/text
+
+        // write the left cell
+        $this->MultiCell($left_width, 0, $left, 0, 'L', 0, 2, '', '', true, 0, true);
+
+        $page_end_1 = $this->getPage();
+        $y_end_1    = $this->GetY();
+
+        $this->setPage($page_start);
+
+        // write the right cell
+        $this->MultiCell(185, 0, $right, 0, 'R', 0, 1, 0, $y_start, true, 0, true);
+
+        //pdf_multi_row($info_right_column, '', $this, ($dimensions['wk'] / 1) - $dimensions['lm']);
+        //pdf_multi_row($info_left_column, $info_right_column, $this, ($dimensions['wk'] / 1) - $dimensions['lm']);
+
+        //$this->ln(5);
     }
 
     public function prepare()
@@ -65,6 +106,33 @@ class Quotation_pdf extends App_pdf
         ]);
 
         return $this->build();
+    }
+
+    // Page footer
+    public function Footer() {
+        // Position at 15 mm from bottom
+        $this->SetY(-25);
+        // Set font
+        $this->SetFont('helvetica', 'B', 10);
+        
+
+        $tbl = <<<EOD
+        <table cellspacing="0" cellpadding="5" border="0">
+            <tr>
+                <td width ="75%" align="center" style="background-color:#00008B;color:#FFF;">
+                    <span style="font-size:20px;line-height: 200%;">PT. Cipta Mas Jaya</span><BR />
+                    Jl. Raya Taktakan No.9, Lontarbaru, Kec. Serang Kota Serang, Banten <BR />
+                    Web : www.ciptamasjaya.co.id - Email : info@ciptamasjaya.co.id 
+                </td>
+                <td width ="25%"  align="center" style="font-size:20px; line-height: 200%; vertical-align:middle; background-color:#FF0000; color:#FFF;">TOTAL SOLUTION FOR SAFETY</td>
+            </tr>
+        </table>
+        EOD;
+
+        $this->writeHTML($tbl, true, false, false, false, '');
+
+
+
     }
 
     protected function type()

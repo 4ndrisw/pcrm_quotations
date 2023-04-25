@@ -318,16 +318,15 @@ function validate_quotation_form(selector) {
     selector = typeof (selector) == 'undefined' ? '#quotation-form' : selector;
 
     appValidateForm($(selector), {
-        client_id: {
+        rel_id: {
             required: {
                 depends: function () {
-                    var customerRemoved = $('select#client_id').hasClass('customer-removed');
+                    var customerRemoved = $('select#rel_type').hasClass('customer-removed');
                     return !customerRemoved;
                 }
             }
         },
         date: 'required',
-        office_id: 'required',
         number: {
             required: true
         }
@@ -457,4 +456,98 @@ function reload_quotations_tables() {
             $(selector).DataTable().ajax.reload(null, false);
         }
     });
+}
+
+function init_quotations_attach_file(){
+
+  $("#quotations_attach_file").on("hidden.bs.modal", function (e) {
+    $("#sales_uploaded_files_preview").empty();
+    $(".dz-file-preview").empty();
+  });
+
+  if (typeof Dropbox != "undefined") {
+    if ($("#dropbox-chooser-sales").length > 0) {
+      document.getElementById("dropbox-chooser-sales").appendChild(
+        Dropbox.createChooseButton({
+          success: function (files) {
+            salesExtenalFileUpload(files, "dropbox");
+          },
+          linkType: "preview",
+          extensions: app.options.allowed_files.split(","),
+        })
+      );
+    }
+  }
+  /*
+  if ($("#sales-upload").length > 0) {
+    new Dropzone(
+      "#sales-upload",
+      appCreateDropzoneOptions({
+        sending: function (file, xhr, formData) {
+          formData.append(
+            "rel_id",
+            $("body").find('input[name="_attachment_sale_id"]').val()
+          );
+          formData.append(
+            "type",
+            $("body").find('input[name="_attachment_sale_type"]').val()
+          );
+        },
+        success: function (files, response) {
+          response = JSON.parse(response);
+          var type = $("body")
+            .find('input[name="_attachment_sale_type"]')
+            .val();
+          var dl_url, delete_function;
+          dl_url = "download/file/sales_attachment/";
+          delete_function = "delete_" + type + "_attachment";
+          if (type == "estimate") {
+            $("body").hasClass("estimates-pipeline")
+              ? estimate_pipeline_open(response.rel_id)
+              : init_estimate(response.rel_id);
+          } else if (type == "proposal") {
+            $("body").hasClass("proposals-pipeline")
+              ? proposal_pipeline_open(response.rel_id)
+              : init_proposal(response.rel_id);
+          } else {
+            if (typeof window["init_" + type] == "function") {
+              window["init_" + type](response.rel_id);
+            }
+          }
+          var data = "";
+          if (response.success === true || response.success == "true") {
+            data +=
+              '<div class="display-block sales-attach-file-preview" data-attachment-id="' +
+              response.attachment_id +
+              '">';
+            data += '<div class="col-md-10">';
+            data +=
+              '<div class="pull-left"><i class="attachment-icon-preview fa-regular fa-file"></i></div>';
+            data +=
+              '<a href="' +
+              site_url +
+              dl_url +
+              response.key +
+              '" target="_blank">' +
+              response.file_name +
+              "</a>";
+            data += '<p class="text-muted">' + response.filetype + "</p>";
+            data += "</div>";
+            data += '<div class="col-md-2 text-right">';
+            data +=
+              '<a href="#" class="text-danger" onclick="' +
+              delete_function +
+              "(" +
+              response.attachment_id +
+              '); return false;"><i class="fa fa-times"></i></a>';
+            data += "</div>";
+            data += '<div class="clearfix"></div><hr/>';
+            data += "</div>";
+            $("#sales_uploaded_files_preview").append(data);
+          }
+        },
+      })
+    );
+  }
+  */
 }

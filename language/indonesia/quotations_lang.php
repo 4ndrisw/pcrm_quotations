@@ -16,10 +16,13 @@ $lang['quotation_status_open'] = 'Terbuka';
 $lang['quotation_status_revised'] = 'Direvisi';
 $lang['quotation_status_declined'] = 'Ditolak';
 $lang['quotation_status_accepted'] = 'Diterima';
+$lang['quotation_status_expired'] = 'Kadaluarsa';
+$lang['quotation_status_approved'] = 'Disetujui';
+
 $lang['quotation_expired'] = 'Kadaluarsa';
 $lang['quotations_leads_related'] = 'Leads';
 $lang['quotations_customers_related'] = 'Customers';
-$lang['quotation_subject'] = 'Nomor';
+$lang['quotation_subject'] = 'Perihal';
 $lang['quotation_to'] = 'Kepada';
 $lang['quotation_total'] = 'Total';
 $lang['quotation_date'] = 'Tanggal';
@@ -35,7 +38,6 @@ $lang['quotation_subtotal'] = 'Sub total';
 
 $lang['quotation_comments'] = 'Komentar';
 $lang['quotation_reminders'] = 'Pengingat';
-$lang['quotation_notes'] = 'Catatan';
 $lang['quotation_edit'] = 'Edit';
 $lang['quotation_send_to_email'] = 'Kirim ke email';
 $lang['quotation_view'] = 'Lihat';
@@ -72,3 +74,19 @@ $lang['quotation_data_expiry_date']='Tanggal Kadaluarsa';
 
 $lang['clients_accept_quotation']='Terima';
 $lang['clients_decline_quotation']='Tolak';
+
+$lang['quotation_note']='Rincian Pekerjaan:';
+$lang['quotations_pipeline']='Pipeline';
+$lang['quotations_pipeline_sort']='Urut Berdasarkan';
+$lang['quotations_sort_datecreated']='Tanggal dibuat';
+$lang['quotations_sort_quotation_date']='Tanggal Penawaran';
+$lang['quotations_sort_open_till']='Berlaku sampai';
+$lang['no_quotations_found']='Penawaran tidak ditemukan';
+$lang['quotation_address']='Alamat';
+$lang['quotation_assigned']='Petugas';
+$lang['quotation_files']='File';
+
+$lang['quotations_sort_pipeline']='Urutan Pipeline';
+$lang['quotations_sort_expiry_date']='Tanggal Kedaluwarsa';
+
+$lang['quotation_mark_as']                = 'Tandai sebagai %s';

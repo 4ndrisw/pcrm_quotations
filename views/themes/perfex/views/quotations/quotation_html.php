@@ -65,7 +65,13 @@
                   </button>
                   <?php echo form_close(); ?>
                   <?php if((is_client_logged_in() && has_contact_permission('quotations'))  || is_staff_member()){ ?>
-                  <a href="<?php echo site_url('clients/quotations/'); ?>" class="btn btn-default pull-right mright5 mtop7 action-button go-to-portal">
+                     <?php 
+                        $clients = 'clients';
+                        if(is_staff_member()){
+                           $clients = 'admin';
+                        }
+                       ?>
+                  <a href="<?php echo site_url($clients.'/quotations/'); ?>" class="btn btn-default pull-right mright5 mtop7 action-button go-to-portal">
                   <?php echo _l('client_go_to_dashboard'); ?>
                   </a>
                   <?php } ?>
@@ -211,13 +217,33 @@
             <?php } ?>
             <?php if(!empty($quotation->client_note)){ ?>
             <div class="col-md-12 quotation-html-note">
-               <b><?php echo _l('quotation_note'); ?></b><br /><br /><?php echo $quotation->client_note; ?>
+               <b><?php echo _l('quotation_note'); ?></b><br />
+               <?php
+                  $notes = explode('--', $quotation->client_note);
+                  $note_text = '<ul>';
+                  foreach ($notes as $note) {
+                     if($note !== ''){
+                        $note_text .='<li>' . $note . '</li>'; 
+                     }               }
+                  $note_text .= '</ul>';
+                  echo($note_text); 
+               ?>
             </div>
             <?php } ?>
             <?php if(!empty($quotation->terms)){ ?>
             <div class="col-md-12 quotation-html-terms-and-conditions">
                <hr />
-               <b><?php echo _l('terms_and_conditions'); ?>:</b><br /><br /><?php echo $quotation->terms; ?>
+               <b><?php echo _l('terms_and_conditions'); ?>:</b><br />
+               <?php
+                  $terms = explode('==', $quotation->terms);
+                  $term_text = '<ol>';
+                  foreach ($terms as $term) {
+                     if($term !== ''){
+                        $term_text .='<li>' . $term . '</li>'; 
+                     }               }
+                  $term_text .= '</ol>';
+                  echo($term_text); 
+               ?>
             </div>
             <?php } ?>
          </div>

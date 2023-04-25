@@ -20,7 +20,6 @@ hooks()->add_action('admin_init', 'quotations_module_init_menu_items');
 hooks()->add_action('admin_init', 'quotations_permissions');
 hooks()->add_action('admin_init', 'quotations_settings_tab');
 hooks()->add_action('clients_init', 'quotations_clients_area_menu_items');
-
 //hooks()->add_action('app_admin_head', 'quotations_head_component');
 //hooks()->add_action('app_admin_footer', 'quotations_footer_js_component');
 
@@ -147,7 +146,40 @@ register_deactivation_hook(QUOTATIONS_MODULE_NAME, 'quotations_module_deactivati
 function quotations_module_deactivation_hook()
 {
 
-     log_activity( 'Hello, world! . quotations_module_deactivation_hook ' );
+    $CI = &get_instance();
+
+    if ($CI->db->table_exists(db_prefix() . 'quotations')) {
+      $CI->db->query('DROP TABLE `' . db_prefix() . 'quotations`');
+    }
+
+    if ($CI->db->table_exists(db_prefix() . 'quotation_activity')) {
+      $CI->db->query('DROP TABLE `' . db_prefix() . 'quotation_activity`');
+    }
+
+    if ($CI->db->table_exists(db_prefix() . 'quotation_comments')) {
+      $CI->db->query('DROP TABLE `' . db_prefix() . 'quotation_comments`');
+    }
+
+    if ($CI->db->table_exists(db_prefix() . 'quotation_notes')) {
+      $CI->db->query('DROP TABLE `' . db_prefix() . 'quotation_notes`');
+    }
+
+   $CI->db->query('DELETE FROM `' . db_prefix() . 'options` WHERE `name` LIKE "%quotation%"');
+   $CI->db->query('DELETE FROM `' . db_prefix() . 'itemable` WHERE `rel_type` LIKE "%quotation%"');
+   $CI->db->query('DELETE FROM `' . db_prefix() . 'item_tax` WHERE `rel_type` LIKE "%quotation%"');
+   $CI->db->query('DELETE FROM `' . db_prefix() . 'reminders` WHERE `rel_type` LIKE "%quotation%"');
+   $CI->db->query('DELETE FROM `' . db_prefix() . 'emailtemplates` WHERE `name` LIKE "%quotation%"');
+
+    // quotations
+    
+    $CI->load->model('quotations/quotations_model');
+    $quotations = $CI->db->select('id')
+                    ->from(db_prefix() . 'files')
+                    ->where('rel_type', 'quotation')
+                    ->get()->result();
+    foreach($quotations as $quotation){
+        $CI->quotations_model->delete_attachment($quotation->id);
+    }
 }
 
 //hooks()->add_action('deactivate_' . $module . '_module', $function);

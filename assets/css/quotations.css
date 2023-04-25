@@ -38,3 +38,12 @@ body table.quotation-items-preview td.description span strong{
 body table.quotation-items-preview td.description span {
     color: #989898 !important;
 }
+ul.unordered-list li{
+    list-style: disc;
+    margin-left: 20px;
+}
+
+ol.ordered-list li{
+    list-style: auto;
+    margin-left: 20px;
+}

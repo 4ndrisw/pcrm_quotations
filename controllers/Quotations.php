@@ -89,7 +89,7 @@ class Quotations extends AdminController
         $this->app->get_table_data(module_views_path('quotations', 'tables/quotations'));
         
     }
-    
+    /*
     public function small_table()
     {
         if (
@@ -102,6 +102,7 @@ class Quotations extends AdminController
         $this->app->get_table_data(module_views_path('quotations', 'tables/quotations_small_table'));
         
     }
+    */
 
     public function quotation_relations($rel_id, $rel_type)
     {
@@ -344,6 +345,8 @@ class Quotations extends AdminController
         ];
 
         $merge_fields = array_merge($merge_fields, $this->app_merge_fields->get_flat('quotations', 'other', '{email_signature}'));
+
+        $data['statuses'] = $this->quotations_model->get_statuses();
         $data['quotations_sale_agents'] = $this->quotations_model->get_sale_agents();
         $data['quotation_statuses']     = $this->quotations_model->get_statuses();
         $data['members']               = $this->staff_model->get('', ['active' => 1]);
@@ -833,6 +836,67 @@ class Quotations extends AdminController
                 $duedate = _d($d);
                 echo $duedate;
             }
+        }
+    }
+
+
+    /* View all settings */
+    public function settings()
+    {
+        if (!has_permission('settings', '', 'view')) {
+            access_denied('settings');
+        }
+        if ($this->input->post()) {
+            if (!has_permission('settings', '', 'edit')) {
+                access_denied('settings');
+            }
+
+                //$config['upload_path']          = './uploads/';
+                //$config['allowed_types']        = 'gif|jpg|png';
+                $config['max_size']             = 100;
+                $config['max_width']            = 1024;
+                $config['max_height']           = 768;
+
+                $this->load->library('upload', $config);
+        
+            $logo_uploaded     = (handle_iso_logo_upload() ? true : false);
+
+        }
+
+        $data['title'] = 'Quotation Settings';
+        $this->load->view('admin/quotations/settings', $data);
+    }
+
+    /* Remove iso logo from settings / ajax */
+    public function remove_iso_logo($type = '')
+    {
+        hooks()->do_action('before_remove_iso_logo');
+
+        if (!has_permission('settings', '', 'delete')) {
+            access_denied('settings');
+        }
+
+        $logoName = get_option('iso_logo');
+        if ($type == 'dark') {
+            $logoName = get_option('iso_logo_dark');
+        }
+
+        //$path = get_upload_path_by_type('iso') . '/' . $logoName;
+        $path = 'uploads/iso' . '/' . $logoName;
+
+        if (file_exists($path)) {
+            unlink($path);
+        }
+
+        update_option('iso_logo' . ($type == 'dark' ? '_dark' : ''), '');
+        redirect($_SERVER['HTTP_REFERER']);
+    }
+                
+    /* Used in kanban when dragging and mark as */
+    public function update_quotation_status()
+    {
+        if ($this->input->post() && $this->input->is_ajax_request()) {
+            $this->quotations_model->update_quotation_status($this->input->post());
         }
     }
 }

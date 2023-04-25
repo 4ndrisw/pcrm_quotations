@@ -122,13 +122,30 @@ class Myquotation extends ClientsController
         }
 
         $quotation = $this->quotations_model->get($id);
+        $notes = explode('--', $quotation->client_note);
+        $note = '<ul>';
+
+        foreach($notes as $row){
+            if($row !==''){
+                $note .= '<li>' . $row .'</li>';
+            }
+        }
+        $note .= '</ul>';
+        $quotation->note = $note;
+
+        $terms = explode('==', $quotation->terms);
+        $term = '<ol>';
+
+        foreach($terms as $row){
+            if($row !==''){
+                $term .= '<li>' . $row .'</li>';
+            }
+        }
+        $term .= '</ol>';
+        $quotation->term = $term;
+
+
         $quotation_number = format_quotation_number($id);
-        /*
-        echo '<pre>';
-        var_dump($quotation);
-        echo '</pre>';
-        die();
-        */
 
         try {
             $pdf = quotation_pdf($quotation);
@@ -151,6 +168,6 @@ class Myquotation extends ClientsController
             $type = 'I';
         }
 
-        $pdf->Output($quotation_number . '.pdf', $type);
+        $pdf->Output(format_quotation_number($id).'-'. $quotation->quotation_to . '.pdf', $type);
     }
 }

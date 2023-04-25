@@ -61,7 +61,7 @@
 </div>
 <div id="quotation">
 </div>
-<?php $this->load->view('admin/includes/modals/sales_attach_file'); ?>
+<?php $this->load->view('admin/includes/modals/quotations_attach_file'); ?>
 <?php init_tail(); ?>
 <div id="convert_helper"></div>
 <script>

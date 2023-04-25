@@ -109,7 +109,6 @@
                               _l('quotation_total'),
                               _l('quotation_date'),
                               _l('quotation_open_till'),
-                              _l('tags'),
                               _l('quotation_date_created'),
                               _l('quotation_status'),
                             );
@@ -137,7 +136,7 @@
       </div>
    </div>
 </div>
-<?php $this->load->view('admin/includes/modals/sales_attach_file'); ?>
+<?php $this->load->view('admin/includes/modals/quotations_attach_file'); ?>
 <script>var hidden_columns = [4,5,6,7];</script>
 <?php init_tail(); ?>
 <div id="convert_helper"></div>

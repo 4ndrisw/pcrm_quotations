@@ -2,6 +2,56 @@
 <?php echo form_hidden('quotations_settings'); ?>
 <div class="horizontal-scrollable-tabs mbot15">
    <div role="tabpanel" class="tab-pane" id="quotations">
+
+   <div class="row">
+      <div class="col-md-12">
+         <?php $iso_logo = get_option('iso_logo'); ?>
+         <?php $iso_logo_dark = get_option('iso_logo_dark'); ?>
+
+         <?php echo $iso_logo .' ==================='; ?>
+         <?php echo $iso_logo_dark; ?>
+
+         <?php if($iso_logo != ''){ ?>
+            <div class="row">
+               <div class="col-md-9">
+                  <img src="<?php echo base_url('uploads/iso/'.$iso_logo); ?>" class="img img-responsive">
+               </div>
+               <?php if(has_permission('settings','','delete')){ ?>
+                  <div class="col-md-3 text-right">
+                     <a href="<?php echo admin_url('settings/remove_iso_logo'); ?>" data-toggle="tooltip" title="<?php echo _l('settings_general_iso_remove_logo_tooltip'); ?>" class="_delete text-danger"><i class="fa fa-remove"></i></a>
+                  </div>
+               <?php } ?>
+            </div>
+            <div class="clearfix"></div>
+         <?php } else { ?>
+            <div class="form-group">
+               <label for="iso_logo" class="control-label"><?php echo _l('settings_general_iso_logo'); ?></label>
+               <input type="file" name="iso_logo" class="form-control" value="" data-toggle="tooltip" title="<?php echo _l('settings_general_iso_logo_tooltip'); ?>">
+            </div>
+         <?php } ?>
+         <hr />
+         <?php if($iso_logo_dark != ''){ ?>
+            <div class="row">
+               <div class="col-md-9">
+                  <img src="<?php echo base_url('uploads/iso/'.$iso_logo_dark); ?>" class="img img-responsive">
+               </div>
+               <?php if(has_permission('settings','','delete')){ ?>
+                  <div class="col-md-3 text-right">
+                     <a href="<?php echo admin_url('settings/remove_iso_logo/dark'); ?>" data-toggle="tooltip" title="<?php echo _l('settings_general_iso_remove_logo_tooltip'); ?>" class="_delete text-danger"><i class="fa fa-remove"></i></a>
+                  </div>
+               <?php } ?>
+            </div>
+            <div class="clearfix"></div>
+         <?php } else { ?>
+            <div class="form-group">
+               <label for="iso_logo_dark" class="control-label"><?php echo _l('iso_logo_dark'); ?></label>
+               <input type="file" name="iso_logo_dark" class="form-control" value="" data-toggle="tooltip" title="<?php echo _l('settings_general_iso_logo_tooltip'); ?>">
+            </div>
+         <?php } ?>
+         <hr />
+      </div>
+   </div>
+
       <div class="form-group">
          <label class="control-label" for="quotation_prefix"><?php echo _l('quotation_prefix'); ?></label>
          <input type="text" name="settings[quotation_prefix]" class="form-control" value="<?php echo get_option('quotation_prefix'); ?>">

@@ -15,12 +15,12 @@ class Quotations_model extends App_Model
     {
         parent::__construct();
         $this->statuses = hooks()->apply_filters('before_set_quotation_statuses', [
-            6,
-            4,
             1,
             5,
             2,
             3,
+            6,
+            4,
         ]);
     }
 
@@ -69,6 +69,10 @@ class Quotations_model extends App_Model
         $data['addedfrom']   = get_staff_user_id();
         $data['hash']        = app_generate_hash();
 
+        $data['prefix'] = get_option('quotation_prefix');
+
+        $data['number_format'] = get_option('quotation_number_format');
+        
         if (empty($data['rel_type'])) {
             unset($data['rel_type']);
             unset($data['rel_id']);
@@ -94,6 +98,7 @@ class Quotations_model extends App_Model
             'items' => $items,
         ]);
 
+
         $data  = $hook['data'];
         $items = $hook['items'];
         unset($data['tags'],$data['item_select'], $data['description'], $data['long_description'],
@@ -103,6 +108,12 @@ class Quotations_model extends App_Model
         $insert_id = $this->db->insert_id();
 
         if ($insert_id) {
+
+            // Update next quotation number in settings
+            $this->db->where('name', 'next_quotation_number');
+            $this->db->set('value', 'value+1', false);
+            $this->db->update(db_prefix() . 'options');
+
             if ($quotationRequestID !== false && $quotationRequestID != '') {
                 $this->load->model('quotation_request_model');
                 $completedStatus = $this->quotation_request_model->get_status_by_flag('completed');
@@ -1138,5 +1149,95 @@ class Quotations_model extends App_Model
         }
 
         return $kanBan->get();
+    }
+
+    /**
+     * Update canban quotation status when drag and drop
+     * @param  array $data quotation data
+     * @return boolean
+     */
+    public function update_quotation_status($data)
+    {
+        $this->db->select('status');
+        $this->db->where('id', $data['quotationid']);
+        $_old = $this->db->get(db_prefix() . 'quotations')->row();
+
+        $old_status = '';
+
+        if ($_old) {
+            $old_status = format_quotation_status($_old->status);
+        }
+
+        $affectedRows   = 0;
+        $current_status = format_quotation_status($data['status']);
+
+
+        $this->db->where('id', $data['quotationid']);
+        $this->db->update(db_prefix() . 'quotations', [
+            'status' => $data['status'],
+        ]);
+
+        $_log_message = '';
+
+        if ($this->db->affected_rows() > 0) {
+            $affectedRows++;
+            if ($current_status != $old_status && $old_status != '') {
+                $_log_message    = 'not_quotation_activity_status_updated';
+                $additional_data = serialize([
+                    get_staff_full_name(),
+                    $old_status,
+                    $current_status,
+                ]);
+
+                hooks()->do_action('quotation_status_changed', [
+                    'quotation_id'    => $data['quotationid'],
+                    'old_status' => $old_status,
+                    'new_status' => $current_status,
+                ]);
+            }
+            $this->db->where('id', $data['quotationid']);
+            $this->db->update(db_prefix() . 'quotations', [
+                'last_status_change' => date('Y-m-d H:i:s'),
+            ]);
+        }
+
+        if ($affectedRows > 0) {
+            if ($_log_message == '') {
+                return true;
+            }
+            $this->log_quotation_activity($data['quotationid'], $_log_message, false, $additional_data);
+
+            return true;
+        }
+
+        return false;
+    }
+    
+    /**
+     * Log quotation activity to database
+     * @param mixed $id quotationid
+     * @param string $description activity description
+     */
+    public function log_quotation_activity($id, $description = '', $client = false, $additional_data = '')
+    {
+        $staffid   = get_staff_user_id();
+        $full_name = get_staff_full_name(get_staff_user_id());
+        if (DEFINED('CRON')) {
+            $staffid   = '[CRON]';
+            $full_name = '[CRON]';
+        } elseif ($client == true) {
+            $staffid   = null;
+            $full_name = '';
+        }
+
+        $this->db->insert(db_prefix() . 'quotation_activity', [
+            'description'     => $description,
+            'date'            => date('Y-m-d H:i:s'),
+            'rel_id'          => $id,
+            'rel_type'        => 'quotation',
+            'staffid'         => $staffid,
+            'full_name'       => $full_name,
+            'additional_data' => $additional_data,
+        ]);
     }
 }
