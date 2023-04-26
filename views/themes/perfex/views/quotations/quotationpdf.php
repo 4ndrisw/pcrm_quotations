@@ -79,7 +79,7 @@ $tblhtml = $items->table();
 
 $pdf->writeHTML($tblhtml, true, false, false, false, '');
 
-$pdf->Ln(8);
+$pdf->Ln(4);
 $tbltotal = '';
 $tbltotal .= '<table cellpadding="6" style="font-size:' . ($font_size + 4) . 'px">';
 $tbltotal .= '
@@ -160,7 +160,7 @@ if ($quotation->assigned != 0 && get_option('show_assigned_on_quotations') == 1)
         'module_width' => 1, // width of a single module in points
         'module_height' => 1 // height of a single module in points
      );
-    $text = format_quotation_number($quotation->id)  .' - ' . _d($quotation->quotation_to);
+    $text = format_quotation_number($quotation->id)  .' - ' . $quotation->quotation_to;
     $assigned_info .= $pdf->write2DBarcode($text, 'QRCODE,L', 37, $pdf->getY(), 40, 40, $style);
 
     $assigned_info .=  '<br /> <br /> <br /> <br /> <br /> <br /><br />';   
