@@ -130,8 +130,6 @@ class Quotation_pdf extends App_pdf
 
         $this->writeHTML($tbl, true, false, false, false, '');
 
-
-
     }
 
     protected function type()
