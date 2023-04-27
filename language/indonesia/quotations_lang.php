@@ -90,3 +90,4 @@ $lang['quotations_sort_pipeline']='Urutan Pipeline';
 $lang['quotations_sort_expiry_date']='Tanggal Kedaluwarsa';
 
 $lang['quotation_mark_as']                = 'Tandai sebagai %s';
+$lang['not_quotation_assigned_to_you']='Penawaran Dikaitkan dengan Anda - %s ...';
