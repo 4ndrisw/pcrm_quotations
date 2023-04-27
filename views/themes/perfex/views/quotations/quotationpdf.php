@@ -208,4 +208,8 @@ if (!empty($quotation->term)) {
     $pdf->writeHTMLCell('', '', '', '', $quotation->term, 0, 1, false, true, 'L', true);
 }
 
+$text = 'Dokumen ini diterbitkan melalui aplikasi `CRM` PT. Cipta Mas Jaya tidak memerlukan tanda tangan basah dan stempel.';
+$pdf->Ln(2);
+$pdf->SetY('266');
+$pdf->writeHTMLCell('', '', '', '', $text, 0, 1, false, true, 'C', true);
 
