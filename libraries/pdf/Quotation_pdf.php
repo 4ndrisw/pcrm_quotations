@@ -119,12 +119,11 @@ class Quotation_pdf extends App_pdf
         $tbl = <<<EOD
         <table cellspacing="0" cellpadding="5" border="0">
             <tr>
-                <td width ="75%" align="center" style="background-color:#00008B;color:#FFF;">
-                    <span style="font-size:20px;line-height: 200%;">PT. Cipta Mas Jaya</span><BR />
+                <td width ="75%" align="center" style="line-height: 200%; vertical-align:middle; background-color:#00008B;color:#FFF;">
                     Jl. Raya Taktakan No.9, Lontarbaru, Kec. Serang Kota Serang, Banten <BR />
                     Web : www.ciptamasjaya.co.id - Email : info@ciptamasjaya.co.id 
                 </td>
-                <td width ="25%"  align="center" style="font-size:20px; line-height: 200%; vertical-align:middle; background-color:#FF0000; color:#FFF;">TOTAL SOLUTION FOR SAFETY</td>
+                <td width ="25%"  align="center" style="font-size:20px; line-height: 100%; vertical-align:middle; background-color:#FF0000; color:#FFF;">TAMASYA <BR />TOTAL SOLUTION FOR SAFETY</td>
             </tr>
         </table>
         EOD;
