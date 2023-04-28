@@ -131,7 +131,6 @@ if (get_option('total_to_words_enabled') == 1) {
     $pdf->writeHTMLCell('', '', '', '', _l('num_word') . ': ' . $CI->numberword->convert($quotation->total, $quotation->currency_name), 0, 1, false, true, 'C', true);
     // Set the font again to normal like the rest of the pdf
     $pdf->SetFont($font_name, '', $font_size);
-    $pdf->Ln(4);
 }
 
 $pdf->Ln(6);
