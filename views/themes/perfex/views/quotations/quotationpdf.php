@@ -196,7 +196,6 @@ if (!empty($quotation->note)) {
 
 if (!empty($quotation->term)) {
     $pdf->Ln(2);
-$pdf->setX(20);
     if($pdf->getY() > 238){
         $pdf->AddPage();
     }
