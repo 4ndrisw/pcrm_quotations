@@ -197,7 +197,7 @@ if (!empty($quotation->note)) {
 if (!empty($quotation->term)) {
     $pdf->Ln(2);
 $pdf->setX(20);
-    if($pdf->getY() >= 237){
+    if($pdf->getY() > 238){
         $pdf->AddPage();
     }
     $pdf->SetFont($font_name, 'B', $font_size);
