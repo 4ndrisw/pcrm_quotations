@@ -198,13 +198,13 @@ if (!empty($quotation->term)) {
     $pdf->Ln(2);
 
     if($pdf->getX() >= 10){
-        $pdf->AddPage();
+        //$pdf->AddPage();
     }
     $pdf->SetFont($font_name, 'B', $font_size);
-    $pdf->Cell(0, 0, _l('terms_and_conditions') . ":", 0, 1, 'L', 0, '', 0);
+    $pdf->Cell(0, 0, _l('terms_and_conditions'.' - '. $pdf->getX() . ' - '. $pdf->getY()) . ":", 0, 1, 'L', 0, '', 0);
     $pdf->SetFont($font_name, '', $font_size);
     $pdf->Ln(2);
-    $pdf->writeHTMLCell('', '', '', '', $quotation->term .' - '. $pdf->getX() . ' - '. $pdf->getY(), 0, 1, false, true, 'L', true);
+    $pdf->writeHTMLCell('', '', '', '', $quotation->term, 0, 1, false, true, 'L', true);
 }
 
 $text = 'Dokumen ini diterbitkan melalui aplikasi `CRM` PT. Cipta Mas Jaya tidak memerlukan tanda tangan basah dan stempel.';
