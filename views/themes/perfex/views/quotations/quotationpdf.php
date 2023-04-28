@@ -186,20 +186,20 @@ $right_info = $swap == '1' ? $assigned_info : $client_info;
 pdf_multi_row($left_info, $right_info, $pdf, ($dimensions['wk'] / 2) - $dimensions['lm']);
 
 if (!empty($quotation->note)) {
-    $pdf->Ln(4);
+    $pdf->Ln(2);
     $pdf->SetFont($font_name, 'B', $font_size);
     $pdf->Cell(0, 0, _l('quotation_note'), 0, 1, 'L', 0, '', 0);
     $pdf->SetFont($font_name, '', $font_size);
     $pdf->Ln(2);
     $pdf->writeHTMLCell('', '', '', '', $quotation->note, 0, 1, false, true, 'L', true);
 }
-$pdf->Ln(4);
-
-if($pdf->getX() >= 10){
-    $pdf->AddPage();
-}
 
 if (!empty($quotation->term)) {
+    $pdf->Ln(2);
+
+    if($pdf->getX() >= 10){
+        $pdf->AddPage();
+    }
     $pdf->SetFont($font_name, 'B', $font_size);
     $pdf->Cell(0, 0, _l('terms_and_conditions') . ":", 0, 1, 'L', 0, '', 0);
     $pdf->SetFont($font_name, '', $font_size);
