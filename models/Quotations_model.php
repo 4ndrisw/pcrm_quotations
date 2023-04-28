@@ -102,7 +102,7 @@ class Quotations_model extends App_Model
         $data  = $hook['data'];
         $items = $hook['items'];
         unset($data['tags'],$data['item_select'], $data['description'], $data['long_description'],
-              $data['quantity'], $data['unit'],$data['rate']
+              $data['quantity'], $data['unit'],$data['rate'],$data['save_and_send']
              );
         $this->db->insert(db_prefix() . 'quotations', $data);
         $insert_id = $this->db->insert_id();
