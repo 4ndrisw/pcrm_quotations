@@ -198,7 +198,7 @@ if (!empty($quotation->term)) {
     $pdf->Ln(2);
 $pdf->setX(20);
     if($pdf->getY() >= 236){
-        //$pdf->AddPage();
+        $pdf->AddPage();
     }
     $pdf->SetFont($font_name, 'B', $font_size);
     $pdf->Cell(0, 0, _l('terms_and_conditions') ." -- ". $pdf->getX() . " -- ". $pdf->getY(). ":", 0, 1, 'L', 0, '', 0);
