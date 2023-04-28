@@ -167,11 +167,7 @@ if ($quotation->assigned != 0 && get_option('show_assigned_on_quotations') == 1)
     $assigned_info .= get_staff_full_name($quotation->assigned);
 }
 $assigned_info .= '</div>';
-/*
-$acceptance_path = <<<EOF
-    <img src="$quotation->acceptance_path">
-EOF;
-*/
+
 $client_info = '<div style="text-align:center;">';
     $client_info .= strtoupper($quotation->quotation_to) .'<br />';
 
