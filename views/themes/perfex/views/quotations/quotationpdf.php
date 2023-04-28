@@ -139,7 +139,7 @@ $prefix = 'Demikianlah penawaran harga ini Kami sampaikan, bila diperlukan disku
 
 $pdf->writeHTMLCell('', '', '', '', $prefix, 0, 1, false, true, 'L', true);
 
-$pdf->ln(10);
+$pdf->ln(6);
 
 /*
 $assigned_path = <<<EOF
