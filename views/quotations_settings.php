@@ -8,9 +8,6 @@
          <?php $iso_logo = get_option('iso_logo'); ?>
          <?php $iso_logo_dark = get_option('iso_logo_dark'); ?>
 
-         <?php echo $iso_logo .' ==================='; ?>
-         <?php echo $iso_logo_dark; ?>
-
          <?php if($iso_logo != ''){ ?>
             <div class="row">
                <div class="col-md-9">
