@@ -133,7 +133,7 @@ if (get_option('total_to_words_enabled') == 1) {
     $pdf->SetFont($font_name, '', $font_size);
 }
 
-$pdf->Ln(6);
+$pdf->Ln(4);
 $prefix = 'Demikianlah penawaran harga ini Kami sampaikan, bila diperlukan diskusi lebih lanjut terkait dengan penawaran ini bisa menghubungi nomor '. get_staff_phonenumber($quotation->assigned).'  a.n '. get_staff_full_name($quotation->assigned) .', atas kesempatan yang berikan, kami mengucapkan terima kasih.';
 
 $pdf->writeHTMLCell('', '', '', '', $prefix, 0, 1, false, true, 'L', true);
