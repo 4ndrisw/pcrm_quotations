@@ -201,7 +201,7 @@ function quotations_module_init_menu_items()
             'name'       => _l('quotation'),
             'url'        => 'quotations',
             'permission' => 'quotations',
-            'icon'     => 'fa-solid fa-money-check',
+            'icon'     => 'fa fa-money',
             'position'   => 57,
             ]);
 
@@ -209,7 +209,7 @@ function quotations_module_init_menu_items()
         $CI->app_menu->add_sidebar_menu_item('quotations', [
                 'slug'     => 'quotations-tracking',
                 'name'     => _l('quotations'),
-                'icon'     => 'fa-solid fa-money-check',
+                'icon'     => 'fa fa-money',
                 'href'     => admin_url('quotations'),
                 'position' => 12,
         ]);
@@ -244,7 +244,7 @@ function quotations_settings_tab()
     $CI = &get_instance();
     $CI->app_tabs->add_settings_tab('quotations', [
         'name'     => _l('settings_group_quotations'),
-        'icon'     => 'fa-solid fa-money-check',
+        'icon'     => 'fa fa-money',
         'view'     => 'quotations/quotations_settings',
         'position' => 51,
     ]);
