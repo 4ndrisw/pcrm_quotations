@@ -7,10 +7,10 @@
          if(isset($quotation)){
              echo form_hidden('isedit',$quotation->id);
             }
-         $rel_type = '';
+            $rel_type = '';
             $rel_id = '';
             if(isset($quotation) || ($this->input->get('rel_id') && $this->input->get('rel_type'))){
-             if($this->input->get('rel_id')){
+             if($this->input->get('rel_type')){
                $rel_id = $this->input->get('rel_id');
                $rel_type = $this->input->get('rel_type');
              } else {
@@ -19,13 +19,7 @@
              }
             }
             ?>
-         <?php
-         echo form_open($this->uri->uri_string(),array('id'=>'quotation-form','class'=>'_transaction_form quotation-form'));
-
-         if($this->input->get('quotation_request_id')) {
-             echo form_hidden('quotation_request_id', $this->input->get('quotation_request_id'));
-         }
-         ?>
+         <?php echo form_open($this->uri->uri_string(),array('id'=>'quotation-form','class'=>'_transaction_form quotation-form')); ?>
 
           <div class="col-md-12">
             <div class="panel_s">
@@ -303,9 +297,9 @@
                   <div class="btn-bottom-toolbar bottom-transaction text-right">
                   <p class="no-mbot pull-left mtop5 btn-toolbar-notice"><?php echo _l('include_quotation_items_merge_field_help','<b>{quotation_items}</b>'); ?></p>
                     <?php
-                      $cancel = $_SERVER['HTTP_REFERER'];
+                      $cancel = admin_url() . 'quotation';
                       if(isset($quotation->id)){
-                        $cancel = $_SERVER['HTTP_REFERER'].'#'.$quotation->id;
+                        $cancel = admin_url() . 'quotation'.'#'.$quotation->id;
                       }
                      ?>
                     <a class="btn btn-sm btn-default" href="<?php echo $cancel; ?>"><?php echo _l('cancel'); ?></a>
