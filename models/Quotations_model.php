@@ -198,7 +198,7 @@ class Quotations_model extends App_Model
         } else {
             if (empty($data['rel_id'])) {
                 $data['rel_id']   = null;
-                $data['rel_type'] = '';
+                //$data['rel_type'] = '';
             }
         }
 
