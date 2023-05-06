@@ -259,9 +259,7 @@ class Quotations_model extends App_Model
         unset($data['unit']);
         unset($data['rate']);
         unset($data['taxname']);
-
-
-
+        unset($data['save_and_send']);
 
         $this->db->where('id', $id);
         $this->db->update(db_prefix() . 'quotations', $data);
