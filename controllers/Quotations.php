@@ -170,6 +170,7 @@ class Quotations extends AdminController
     {
         if ($this->input->post()) {
             $quotation_data = $this->input->post();
+
             if ($id == '') {
                 if (!has_permission('quotations', '', 'create')) {
                     access_denied('quotations');
