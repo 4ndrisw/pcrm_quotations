@@ -291,11 +291,11 @@
                            </div>
                            <div class="col-md-6">
                               <?php $value = (isset($quotation) ? $quotation->email : ''); ?>
-                              <?php echo render_input('email','quotation_email',$value); ?>
+                              <?php echo render_input('email',_l('quotation_email'),$value); ?>
                            </div>
                            <div class="col-md-6">
                               <?php $value = (isset($quotation) ? $quotation->phone : ''); ?>
-                              <?php echo render_input('phone','quotation_phone',$value); ?>
+                              <?php echo render_input('phone',_l('quotation_phone'),$value); ?>
                            </div>
                         </div>
                      </div>
@@ -309,9 +309,6 @@
                       }
                      ?>
                     <a class="btn btn-sm btn-default" href="<?php echo $cancel; ?>"><?php echo _l('cancel'); ?></a>
-                    <button type="button" class="btn btn-info mleft10 quotation-form-submit save-and-send transaction-submit">
-                        <?php echo _l('save_and_send'); ?>
-                    </button>
                     <button class="btn btn-info mleft5 quotation-form-submit transaction-submit" type="button">
                       <?php echo _l('submit'); ?>
                     </button>
