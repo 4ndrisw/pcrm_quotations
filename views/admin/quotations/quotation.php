@@ -297,9 +297,9 @@
                   <div class="btn-bottom-toolbar bottom-transaction text-right">
                   <p class="no-mbot pull-left mtop5 btn-toolbar-notice"><?php echo _l('include_quotation_items_merge_field_help','<b>{quotation_items}</b>'); ?></p>
                     <?php
-                      $cancel = admin_url() . 'quotation';
+                      $cancel = admin_url() . 'quotations';
                       if(isset($quotation->id)){
-                        $cancel = admin_url() . 'quotation'.'#'.$quotation->id;
+                        $cancel = admin_url() . 'quotations'.'#'.$quotation->id;
                       }
                      ?>
                     <a class="btn btn-sm btn-default" href="<?php echo $cancel; ?>"><?php echo _l('cancel'); ?></a>
