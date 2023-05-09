@@ -184,7 +184,7 @@ $client_info .= '</div>';
 $left_info  = $swap == '1' ? $client_info : $assigned_info;
 $right_info = $swap == '1' ? $assigned_info : $client_info;
 pdf_multi_row($left_info, $right_info, $pdf, ($dimensions['wk'] / 2) - $dimensions['lm']);
-
+/*
 if (!empty($quotation->note)) {
     $pdf->Ln(2);
     $pdf->SetFont($font_name, 'B', $font_size);
@@ -205,6 +205,28 @@ if (!empty($quotation->term)) {
     $pdf->Ln(2);
     $pdf->writeHTMLCell('', '', '', '', $quotation->term, 0, 1, false, true, 'L', true);
 }
+*/
+
+$pdf->Ln(4);
+
+$notice = '<table>';
+$notice .= '<tr>';
+
+$notice .=     '<td align="left" width="50%">';
+$notice .=     '<strong>' . _l('quotation_note') .'</strong>';
+$notice .= $quotation->note;
+$notice .=      '</td>';
+
+$notice .=     '<td align="left" width="50%">';
+$notice .=     '<strong>' ._l('terms_and_conditions') . '</strong>';
+$notice .= $quotation->term;
+$notice .=      '</td>';
+
+$notice .= '</tr>';
+$notice .= '</table>';
+
+$pdf->writeHTML($notice, true, false, false, false, '');
+
 
 $text = 'Dokumen ini diterbitkan melalui aplikasi `CRM` PT. Cipta Mas Jaya tidak memerlukan tanda tangan basah dan stempel.';
 $pdf->Ln(2);
