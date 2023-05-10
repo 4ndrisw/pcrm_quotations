@@ -63,8 +63,8 @@ $left_info = $swap == '1' ? $organization_info : $customer_info;
 
 pdf_multi_row($left_info, $right_info, $pdf, ($dimensions['wk'] / 2) - $dimensions['lm']);
 
-$pdf->Ln(6);
-$prefix = 'Dengan Hormat, <br /><br />';
+$pdf->Ln(4);
+$prefix = 'Dengan Hormat, <br />';
 $prefix .= 'Berdasarkan permintaan harga sertifikasi peralatan K3, berikut ini Kami sampaikan penawaran harga pekerjaan tersebut untuk '. $quotation->quotation_to.' dengan perincian berikut.';
 
 $pdf->writeHTMLCell('', '', '', '', $prefix, 0, 1, false, true, 'L', true);
