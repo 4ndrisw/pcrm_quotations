@@ -79,7 +79,7 @@ $tblhtml = $items->table();
 
 $pdf->writeHTML($tblhtml, true, false, false, false, '');
 
-$pdf->Ln(2);
+$pdf->Ln(1);
 $tbltotal = '';
 $tbltotal .= '<table cellpadding="6" style="font-size:' . ($font_size + 4) . 'px">';
 $tbltotal .= '
