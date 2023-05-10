@@ -125,7 +125,7 @@ foreach ($rResult as $aRow) {
 
     $row[] = $numberOutput;
 
-    $row[] = '<a href="' . admin_url('quotations/list_quotations/' . $aRow[db_prefix() . 'quotations.id']) . '" onclick="init_quotation(' . $aRow[db_prefix() . 'quotations.id'] . '); return false;">' . $aRow['subject'] . ' bb</a>';
+    $row[] = '<a href="' . admin_url('quotations/list_quotations/' . $aRow[db_prefix() . 'quotations.id']) . '" onclick="init_quotation(' . $aRow[db_prefix() . 'quotations.id'] . '); return false;">' . $aRow['subject'] . '</a>';
     
     if($aRow['rel_id'] != ''){
         if ($aRow['rel_type'] == 'lead') {
