@@ -70,7 +70,7 @@ $prefix .= 'Berdasarkan permintaan harga sertifikasi peralatan K3, berikut ini K
 $pdf->writeHTMLCell('', '', '', '', $prefix, 0, 1, false, true, 'L', true);
 
 // The Table
-$pdf->Ln(hooks()->apply_filters('pdf_info_and_table_separator', 4));
+$pdf->Ln(hooks()->apply_filters('pdf_info_and_table_separator', 3));
 
 // The items table
 $items = get_items_table_data($quotation, 'quotation', 'pdf');
