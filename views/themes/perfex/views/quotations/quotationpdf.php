@@ -84,41 +84,41 @@ $tbltotal = '';
 $tbltotal .= '<table cellpadding="6" style="font-size:' . ($font_size + 4) . 'px">';
 $tbltotal .= '
 <tr>
-    <td align="right" width="85%"><strong>' . _l('quotation_subtotal') . '</strong></td>
-    <td align="right" width="15%">' . app_format_money($quotation->subtotal, $quotation->currency_name) . '</td>
+    <td align="right" width="75%"><strong>' . _l('quotation_subtotal') . '</strong></td>
+    <td align="right" width="25%">' . app_format_money($quotation->subtotal, $quotation->currency_name) . '</td>
 </tr>';
 
 if (is_sale_discount_applied($quotation)) {
     $tbltotal .= '
     <tr>
-        <td align="right" width="85%"><strong>' . _l('quotation_discount');
+        <td align="right" width="75%"><strong>' . _l('quotation_discount');
     if (is_sale_discount($quotation, 'percent')) {
         $tbltotal .= ' (' . app_format_number($quotation->discount_percent, true) . '%)';
     }
     $tbltotal .= '</strong>';
     $tbltotal .= '</td>';
-    $tbltotal .= '<td align="right" width="15%">-' . app_format_money($quotation->discount_total, $quotation->currency_name) . '</td>
+    $tbltotal .= '<td align="right" width="25%">-' . app_format_money($quotation->discount_total, $quotation->currency_name) . '</td>
     </tr>';
 }
 
 foreach ($items->taxes() as $tax) {
     $tbltotal .= '<tr>
-    <td align="right" width="85%"><strong>' . $tax['taxname'] . ' (' . app_format_number($tax['taxrate']) . '%)' . '</strong></td>
-    <td align="right" width="15%">' . app_format_money($tax['total_tax'], $quotation->currency_name) . '</td>
+    <td align="right" width="75%"><strong>' . $tax['taxname'] . ' (' . app_format_number($tax['taxrate']) . '%)' . '</strong></td>
+    <td align="right" width="25%">' . app_format_money($tax['total_tax'], $quotation->currency_name) . '</td>
 </tr>';
 }
 
 if ((int)$quotation->adjustment != 0) {
     $tbltotal .= '<tr>
-    <td align="right" width="85%"><strong>' . _l('quotation_adjustment') . '</strong></td>
-    <td align="right" width="15%">' . app_format_money($quotation->adjustment, $quotation->currency_name) . '</td>
+    <td align="right" width="75%"><strong>' . _l('quotation_adjustment') . '</strong></td>
+    <td align="right" width="25%">' . app_format_money($quotation->adjustment, $quotation->currency_name) . '</td>
 </tr>';
 }
 
 $tbltotal .= '
 <tr style="background-color:#f0f0f0;">
-    <td align="right" width="85%"><strong>' . _l('quotation_total') . '</strong></td>
-    <td align="right" width="15%">' . app_format_money($quotation->total, $quotation->currency_name) . '</td>
+    <td align="right" width="75%"><strong>' . _l('quotation_total') . '</strong></td>
+    <td align="right" width="25%">' . app_format_money($quotation->total, $quotation->currency_name) . '</td>
 </tr>';
 
 $tbltotal .= '</table>';
