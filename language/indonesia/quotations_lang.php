@@ -33,7 +33,7 @@ $lang['quotation_status'] = 'Status';
 $lang['quotation_table_item_heading'] = 'Item';
 $lang['quotation_table_quantity_heading'] = 'Jumlah';
 $lang['quotation_table_rate_heading'] = 'Harga';
-$lang['quotation_table_amount_heading'] = 'Jumlah';
+$lang['quotation_table_amount_heading'] = 'Sub total';
 $lang['quotation_subtotal'] = 'Sub total';
 
 $lang['quotation_comments'] = 'Komentar';
