@@ -24,6 +24,9 @@ $filter = [];
 if ($this->ci->input->post('leads_related')) {
     array_push($filter, 'OR rel_type="lead"');
 }
+if ($this->ci->input->post('leads_related')) {
+    array_push($filter, 'OR rel_type="lead"');
+}
 if ($this->ci->input->post('customers_related')) {
     array_push($filter, 'OR rel_type="customer"');
 }
