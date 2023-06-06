@@ -635,6 +635,7 @@ class Quotations extends AdminController
         if ($this->input->post()) {
             echo json_encode([
                 'success' => $this->quotations_model->add_comment($this->input->post()),
+                'message' => _l('comment_add_successfully'),
             ]);
         }
     }
