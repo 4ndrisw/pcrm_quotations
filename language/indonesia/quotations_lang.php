@@ -97,6 +97,7 @@ $lang['quotation_add_edit_number']='Ubah nomor';
 $lang['settings_sales_quotation_prefix']='Nomor Awalan Penawaran';
 $lang['quotation_email']='Email';
 $lang['quotation_phone']='Telepon';
+$lang['comment_add_successfully']                = 'Kommentar telah ditambahkan';
 
 
 
