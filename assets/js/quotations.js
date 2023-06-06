@@ -10,7 +10,6 @@ if ($("body").hasClass('quotations-pipeline')) {
 }
 */
 
-
 function add_quotation_comment() {
     var comment = $('#comment').val();
     if (comment == '') {
