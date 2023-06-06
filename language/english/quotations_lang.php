@@ -95,3 +95,5 @@ $lang['quotations_sort_pipeline']='Pipeline_order';
 $lang['quotations_sort_expiry_date']='Expiry Date';
 
 $lang['quotation_mark_as']                = 'Mark as %s';
+$lang['comment_add_successfully']                = 'Comment add successfully';
+
