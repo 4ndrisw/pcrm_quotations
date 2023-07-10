@@ -103,13 +103,13 @@
                         <?php echo form_hidden('quotation_id',$quotation_id); ?>
                         <?php
                            $table_data = array(
+                              _l('id'),
                               _l('quotation') . ' #',
                               _l('quotation_subject'),
                               _l('quotation_to'),
                               _l('quotation_total'),
                               _l('quotation_date'),
                               _l('quotation_open_till'),
-                              _l('quotation_date_created'),
                               _l('quotation_status'),
                             );
 

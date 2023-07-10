@@ -6,12 +6,12 @@ $baseCurrency = get_base_currency();
 
 $aColumns = [
     db_prefix() . 'quotations.id',
+    'number',
     'subject',
     'quotation_to',
     'total',
     'date',
     'open_till',
-    'datecreated',
     'status',
 ];
 
@@ -113,7 +113,7 @@ foreach ($rResult as $aRow) {
     //$numberOutput = '<a href="' . admin_url('quotations/list_quotations/' . $aRow[db_prefix() . 'quotations.id']. '#' . $aRow[db_prefix() . 'quotations.id']) . '" target="_blank">' . format_quotation_number($aRow[db_prefix() . 'quotations.id']) . '</a>';
     //$numberOutput = '<a href="' . admin_url('quotations/list_quotations/' . $aRow[db_prefix() . 'quotations.id']. '#' . $aRow[db_prefix() . 'quotations.id']) . '">' . format_quotation_number($aRow[db_prefix() . 'quotations.id']) . '</a>';
 
-
+    $row[] = $aRow[db_prefix() . 'quotations.id'];
 
     // If is from client area table
     $numberOutput = '<a href="' . admin_url('quotations/list_quotations/' . $aRow[db_prefix() . 'quotations.id']. '#' . $aRow[db_prefix() . 'quotations.id']) . '" onclick="init_quotation(' . $aRow[db_prefix() . 'quotations.id'] . '); return false;">' . format_quotation_number($aRow[db_prefix() . 'quotations.id']) . '</a>';
@@ -155,7 +155,7 @@ foreach ($rResult as $aRow) {
 
     $row[] = _d($aRow['open_till']);
 
-    $row[] = _d($aRow['datecreated']);
+    //$row[] = _d($aRow['datecreated']);
 
             $span = '';
                 //if (!$locked) {
