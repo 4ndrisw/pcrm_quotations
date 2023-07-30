@@ -774,6 +774,7 @@ class Quotations_model extends App_Model
         $insert_data['datecreated'] = date('Y-m-d H:i:s');
         $insert_data['date']        = _d(date('Y-m-d'));
         $insert_data['status']      = 6;
+        $insert_data['number']      = get_option('next_quotation_number');
         $insert_data['hash']        = app_generate_hash();
 
         // in case open till is expired set new 7 days starting from current date
