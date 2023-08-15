@@ -47,3 +47,6 @@ ol.ordered-list li{
     list-style: auto;
     margin-left: 20px;
 }
+.quotation-view #wrapper {
+    margin-left: 0;
+}
