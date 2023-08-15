@@ -48,7 +48,6 @@ function quotations_add_dashboard_widget($widgets)
     return $widgets;
 }
 
-
 function quotations_staff_member_deleted($data)
 {
     $CI = &get_instance();
@@ -125,7 +124,6 @@ function quotations_permissions()
 
     register_staff_capabilities('quotations', $capabilities, _l('quotations'));
 }
-
 
 /**
 * Register activation module hook
