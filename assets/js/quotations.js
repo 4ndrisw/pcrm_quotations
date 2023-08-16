@@ -447,6 +447,20 @@ function quotation_mark_as(status_id, quotation_id) {
     });
 }
 
+
+// From quotation table mark as
+function quotation_status_mark_as(status_id, quotation_id) {
+    var data = {};
+    data.status = status_id;
+    data.quotationid = quotation_id;
+    $.post(admin_url + 'quotations/update_quotation_status', data).done(function (response) {
+        //table_quotations.DataTable().ajax.reload(null, false);
+        reload_quotations_tables();
+    });
+    init_quotation(quotation_id);
+}
+
+
 // Reload all quotations possible table where the table data needs to be refreshed after an action is performed on task.
 function reload_quotations_tables() {
     var av_quotations_tables = ['.table-quotations', '.table-rel-quotations'];
