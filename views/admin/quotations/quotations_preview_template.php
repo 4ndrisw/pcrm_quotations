@@ -133,7 +133,7 @@
                     foreach($quotation_statuses as $status){
                       if($quotation->status != $status){ ?>
                         <li>
-                           <a href="<?php echo admin_url() . 'quotations/mark_action_status/'.$status.'/'.$quotation->id; ?>">
+                          <a href="#" onclick="quotation_status_mark_as( <?php echo $status ?> , <?php echo $quotation->id; ?> ); return false;">
                            <?php echo _l('quotation_mark_as',format_quotation_status($status,'',false)); ?></a>
                         </li>
                      <?php }
